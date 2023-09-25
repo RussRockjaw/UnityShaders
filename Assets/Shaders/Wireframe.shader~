@@ -1,0 +1,13 @@
+Shader "Custom/Unlit/Wireframe"
+{
+    Properties
+    {
+        _MainTexture("Texture", 2D) = "white"{}
+        _Color("Color", Color) = (1, 1, 1, 0.25)
+    }
+
+    SubShader
+    {
+        
+    }
+}
