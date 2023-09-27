@@ -35,7 +35,7 @@ Shader "Custom/Unlit/InvertedHullOutline"
             v2f vert (appdata v)
             {
                 v2f o;
-                o.vertex = normalize(v.normal) * _OutlineThickness + v.vertex;
+                o.vertex = UnityObjectToClipPos(normalize(v.normal) * _OutlineThickness + v.vertex);
                 return o;
             }
 
