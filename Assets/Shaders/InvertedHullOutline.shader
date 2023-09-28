@@ -9,6 +9,7 @@ Shader "Custom/Unlit/InvertedHullOutline"
     {
         Tags {"RenderType"="Transparent" "Queue"="Transparent"}
         LOD 100
+        Cull Off
 
         Pass
         {
@@ -46,6 +47,7 @@ Shader "Custom/Unlit/InvertedHullOutline"
                 return col;
             }
             ENDCG
+            Cull Front
         }
     }
 }
