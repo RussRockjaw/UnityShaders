@@ -48,6 +48,7 @@ Shader "Custom/Standard/Dissolve"
         {
             half dissolveValue = tex2D(_DissolveTexture, IN.uv_MainTex).r;
             clip(dissolveValue - _Amount);
+            o.Emission = fixed3(0, 0.5, 1) * step(dissolveValue - _Amount, 0.05f);
 
             // Albedo comes from a texture tinted by color
             fixed4 c = tex2D(_MainTex, IN.uv_MainTex) * _Color;
