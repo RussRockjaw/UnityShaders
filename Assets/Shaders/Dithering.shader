@@ -1,9 +1,8 @@
-Shader "Custom/Unlit/Dithering"
+Shader "Unlit/Dithering"
 {
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-        _DitherPattern ("Dithering Pattern", 2D) = "white" {}
     }
     SubShader
     {
@@ -31,15 +30,10 @@ Shader "Custom/Unlit/Dithering"
                 float2 uv : TEXCOORD0;
                 UNITY_FOG_COORDS(1)
                 float4 vertex : SV_POSITION;
-
-                float4 screenPosition : TEXCOORD1;
             };
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
-
-            sampler2D _DitherPattern; 
-            float4 _TexelSize; 
 
             v2f vert (appdata v)
             {
@@ -52,12 +46,10 @@ Shader "Custom/Unlit/Dithering"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                float texColor = tex2D(_MainTex, i.uv).r;           //Get the red channel of the main texture
-                float2 screenPos = i.screenPosition.xy / i.screenPosition.w;
-                float2 ditherCoordinate = screenPos * _ScreenParams.xy * _TexelSize.xy;
-                float ditherValue = tex2D(_DitherPattern, ditherCoordinate).r;
-                float col = step(ditherValue, texColor);            //Return 1 if texColor is > than ditherValue, else return 0
-                clip(col - 1);
+                // sample the texture
+                fixed4 col = tex2D(_MainTex, i.uv);
+                // apply fog
+                UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;
             }
             ENDCG
