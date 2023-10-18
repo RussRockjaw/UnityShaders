@@ -7,9 +7,9 @@ public class TileTextureManager : MonoBehaviour
 {
     private Material material;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        material = this.gameObject.GetComponent<Renderer>().material;
+        material = new Material(this.gameObject.GetComponent<Renderer>().sharedMaterial);
     }
 
     // Update is called once per frame
