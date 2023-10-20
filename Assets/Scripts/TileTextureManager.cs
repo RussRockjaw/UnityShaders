@@ -6,6 +6,7 @@ using UnityEngine;
 public class TileTextureManager : MonoBehaviour
 {
     private Material material;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -15,7 +16,6 @@ public class TileTextureManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       material.SetFloat("_Width", this.transform.localScale.x);
-       material.SetFloat("_Height", this.transform.localScale.y);
+        
     }
 }
