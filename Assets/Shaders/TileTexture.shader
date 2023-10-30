@@ -1,4 +1,4 @@
-Shader "Custom/TileTexture"
+Shader "Custom/Standard/TileTexture"
 {
     Properties
     {
@@ -6,7 +6,7 @@ Shader "Custom/TileTexture"
         _MainTex ("Albedo (RGB)", 2D) = "white" {}
         _Glossiness ("Smoothness", Range(0,1)) = 0.5
         _Metallic ("Metallic", Range(0,1)) = 0.0
-        _TexResolution("Texture Resolution", Float) = 512
+        _UVs("UV Scale", float) = 1.0
     }
     SubShader
     {
@@ -21,17 +21,18 @@ Shader "Custom/TileTexture"
         #pragma target 3.0
 
         sampler2D _MainTex;
-        fixed4 _MainTex_TexelSize;
+        float _UVs;
 
         struct Input
         {
             float2 uv_MainTex;
+            float3 worldPos;
+            float3 worldNormal;
         };
 
         half _Glossiness;
         half _Metallic;
         fixed4 _Color;
-        float _TexResolution;
 
         // Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
         // See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
@@ -42,15 +43,21 @@ Shader "Custom/TileTexture"
 
         void surf (Input IN, inout SurfaceOutputStandard o)
         {
-            IN.uv_MainTex.x *= _MainTex_TexelSize.z / _TexResolution; 
-            IN.uv_MainTex.y *= _MainTex_TexelSize.w / _TexResolution; 
+            float3 position = IN.worldPos / (-1.0 * abs(_UVs));
+            float3 c00 = tex2D(_MainTex, IN.worldPos / 10);
+            float3 c1= tex2D(_MainTex, position.yz).rgb;
+            float3 c2 = tex2D(_MainTex, position.xz).rgb;
+            float3 c3 = tex2D(_MainTex, position.xy).rgb;
+            float alpha21 = abs(IN.worldNormal.x);
+            float alpha23 = abs(IN.worldNormal.z);
+            float3 c21 = lerp(c2, c1, alpha21).rgb;
+            float3 c23 = lerp(c21, c3, alpha23).rgb;
+
             // Albedo comes from a texture tinted by color
-            fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
-            o.Albedo = c.rgb;
+            o.Albedo = c23;
             // Metallic and smoothness come from slider variables
             o.Metallic = _Metallic;
             o.Smoothness = _Glossiness;
-            o.Alpha = c.a;
         }
         ENDCG
     }
