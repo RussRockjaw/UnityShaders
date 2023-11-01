@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class DissolveMaterialControl : MonoBehaviour
 {
     private int pxWidth = 100, pxHeight = 100;

@@ -9,6 +9,7 @@ Shader "Custom/Standard/Dissolve"
 
         _DissolveTexture("Dissolve Texture", 2D) = "white" {}
         _Amount("Amount", Range(0,1)) = 0
+        _DissolveColor("Dissolve Color", Color) = (1,1,1,1)
     }
     SubShader
     {
@@ -36,6 +37,7 @@ Shader "Custom/Standard/Dissolve"
 
         sampler2D _DissolveTexture;
         half _Amount;
+        fixed3 _DissolveColor;
 
         // Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
         // See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
@@ -48,7 +50,7 @@ Shader "Custom/Standard/Dissolve"
         {
             half dissolveValue = tex2D(_DissolveTexture, IN.uv_MainTex).r;
             clip(dissolveValue - _Amount);
-            o.Emission = fixed3(0, 0.5, 1) * step(dissolveValue - _Amount, 0.05f);
+            o.Emission = _DissolveColor * step(dissolveValue - _Amount, 0.05f);
 
             // Albedo comes from a texture tinted by color
             fixed4 c = tex2D(_MainTex, IN.uv_MainTex) * _Color;
